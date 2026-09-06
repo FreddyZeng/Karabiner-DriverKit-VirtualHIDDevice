@@ -5,11 +5,10 @@
 #include <iostream>
 #include <memory>
 #include <pqrs/hid.hpp>
-#include <pqrs/local_datagram.hpp>
 #include <pqrs/osx/iokit_return.hpp>
 #include <pqrs/osx/process_info.hpp>
 
-int main(void) {
+int main() {
   std::signal(SIGINT, SIG_IGN);
   std::signal(SIGTERM, SIG_IGN);
   std::signal(SIGUSR1, SIG_IGN);
@@ -20,7 +19,9 @@ int main(void) {
   pqrs::osx::process_info::enable_sudden_termination();
 
   pqrs::dispatcher::extra::initialize_shared_dispatcher();
-  pqrs::cf::run_loop_thread::extra::initialize_shared_run_loop_thread();
+
+  // If the CFRunLoop can no longer start properly, exit and let launchd restart it.
+  pqrs::cf::run_loop_thread::extra::initialize_shared_run_loop_thread(pqrs::cf::run_loop_thread::failure_policy::exit);
 
   logger::set_async_rotating_logger("virtual_hid_device_service",
                                     "/var/log/karabiner/virtual_hid_device_service.log",
@@ -34,7 +35,6 @@ int main(void) {
   // Create instances
   //
 
-  auto run_loop_thread = std::make_shared<pqrs::cf::run_loop_thread>();
   auto server = std::make_unique<virtual_hid_device_service_server>(pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread());
 
   //
@@ -52,7 +52,7 @@ int main(void) {
   {
     dispatch_source_t sigint_source = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL, SIGINT, 0, dispatch_get_main_queue());
     dispatch_source_set_event_handler(sigint_source, ^{
-      logger::get_logger()->info("SIGINT");
+      logger::get_logger()->debug("SIGINT");
       termination_handler();
     });
     dispatch_resume(sigint_source);
@@ -60,7 +60,7 @@ int main(void) {
   {
     dispatch_source_t sigterm_source = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL, SIGTERM, 0, dispatch_get_main_queue());
     dispatch_source_set_event_handler(sigterm_source, ^{
-      logger::get_logger()->info("SIGTERM");
+      logger::get_logger()->debug("SIGTERM");
       termination_handler();
     });
     dispatch_resume(sigterm_source);

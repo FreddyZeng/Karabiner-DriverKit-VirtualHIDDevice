@@ -3,14 +3,13 @@
 #include <iostream>
 #include <pqrs/karabiner/driverkit/virtual_hid_device_driver.hpp>
 #include <pqrs/karabiner/driverkit/virtual_hid_device_service.hpp>
-#include <pqrs/local_datagram.hpp>
 #include <thread>
 
 namespace {
 std::atomic<bool> exit_flag(false);
 }
 
-int main(void) {
+int main() {
   std::signal(SIGINT, [](int) {
     exit_flag = true;
   });

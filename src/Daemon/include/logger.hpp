@@ -9,7 +9,7 @@
 
 class logger final {
 public:
-  static pqrs::not_null_shared_ptr_t<spdlog::logger> get_logger(void) {
+  static pqrs::not_null_shared_ptr_t<spdlog::logger> get_logger() {
     std::lock_guard<std::mutex> guard(mutex_);
 
     if (logger_) {
@@ -37,7 +37,8 @@ public:
                                                                   256 * 1024,
                                                                   3);
     if (l) {
-      l->flush_on(spdlog::level::info);
+      l->set_level(spdlog::level::debug);
+      l->flush_on(spdlog::level::debug);
       l->set_pattern(pqrs::spdlog::get_pattern());
 
       std::lock_guard<std::mutex> guard(mutex_);

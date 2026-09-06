@@ -17,6 +17,7 @@ namespace {
 // Thus, we have to set a smallest value to usage maximum.
 //
 
+// clang-format off
 const uint8_t reportDescriptor[] = {
     0x05, 0x01,       // Usage Page (Generic Desktop)
     0x09, 0x06,       // Usage (Keyboard)
@@ -131,6 +132,7 @@ const uint8_t reportDescriptor[] = {
     0x81, 0x00,       //   Input...................(Data, Array, Absolute)
     0xc0,             // End Collection
 };
+// clang-format on
 } // namespace
 
 struct org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard_IVars {
@@ -189,7 +191,7 @@ kern_return_t IMPL(org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard, Stop) {
   return Stop(provider, SUPERDISPATCH);
 }
 
-OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard::newDeviceDescription(void) {
+OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard::newDeviceDescription() {
   os_log(OS_LOG_DEFAULT, LOG_PREFIX " newDeviceDescription");
 
   auto dictionary = OSDictionary::withCapacity(12);
@@ -263,7 +265,7 @@ OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard::newDeviceDescript
   return dictionary;
 }
 
-OSData* org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard::newReportDescriptor(void) {
+OSData* org_pqrs_Karabiner_DriverKit_VirtualHIDKeyboard::newReportDescriptor() {
   os_log(OS_LOG_DEFAULT, LOG_PREFIX " newReportDescriptor");
 
   return OSData::withBytes(reportDescriptor, sizeof(reportDescriptor));

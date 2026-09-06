@@ -1,5 +1,15 @@
 VERSION = `/usr/bin/python3 scripts/get_version.py package_version`
 
+CLANG_FORMAT_FILES = \
+	'*.h' \
+	'*.hpp' \
+	'*.hpp.in' \
+	'*.iig' \
+	'*.mm' \
+	'*.cpp' \
+	':(exclude)docs/vendor/**' \
+	':(exclude)vendor/**'
+
 all:
 	@echo 'Type `make package`'
 
@@ -30,8 +40,15 @@ staple:
 check-staple:
 	@xcrun stapler validate `find dist | sort -V | tail -n 1`
 
+format: clang-format swift-format
+
+clang-format:
+	git ls-files -z -- $(CLANG_FORMAT_FILES) | xargs -0 clang-format -i
+
 swift-format:
 	find * -name '*.swift' -print0 | xargs -0 swift-format -i
 
 swiftlint:
 	swiftlint
+
+notarized-pkg: package notarize

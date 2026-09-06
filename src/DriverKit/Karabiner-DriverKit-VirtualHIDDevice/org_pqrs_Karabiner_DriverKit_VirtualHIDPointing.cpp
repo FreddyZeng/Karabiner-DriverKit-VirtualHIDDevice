@@ -10,6 +10,7 @@
 #define LOG_PREFIX "Karabiner-DriverKit-VirtualHIDPointing " KARABINER_DRIVERKIT_VERSION
 
 namespace {
+// clang-format off
 const uint8_t reportDescriptor[] = {
     0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
     0x09, 0x02,        // USAGE (Mouse)
@@ -78,7 +79,8 @@ const uint8_t reportDescriptor[] = {
     0xc0,              //   END_COLLECTION
     0xc0               // END_COLLECTION};
 };
-}
+// clang-format on
+} // namespace
 
 struct org_pqrs_Karabiner_DriverKit_VirtualHIDPointing_IVars {
   org_pqrs_Karabiner_DriverKit_VirtualHIDDeviceUserClient* provider;
@@ -135,7 +137,7 @@ kern_return_t IMPL(org_pqrs_Karabiner_DriverKit_VirtualHIDPointing, Stop) {
   return Stop(provider, SUPERDISPATCH);
 }
 
-OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDPointing::newDeviceDescription(void) {
+OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDPointing::newDeviceDescription() {
   os_log(OS_LOG_DEFAULT, LOG_PREFIX " newDeviceDescription");
 
   auto dictionary = OSDictionary::withCapacity(10);
@@ -191,7 +193,7 @@ OSDictionary* org_pqrs_Karabiner_DriverKit_VirtualHIDPointing::newDeviceDescript
   return dictionary;
 }
 
-OSData* org_pqrs_Karabiner_DriverKit_VirtualHIDPointing::newReportDescriptor(void) {
+OSData* org_pqrs_Karabiner_DriverKit_VirtualHIDPointing::newReportDescriptor() {
   os_log(OS_LOG_DEFAULT, LOG_PREFIX " newReportDescriptor");
 
   return OSData::withBytes(reportDescriptor, sizeof(reportDescriptor));
